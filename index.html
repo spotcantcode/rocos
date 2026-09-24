@@ -59,6 +59,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         e.target.tagName, String(e.target.src || e.target.href || ''));
       return;
     }
+    // Phones and in-app browsers inject their own scripts (Firefox reader,
+    // wallet providers). Those throw on the page and are not bundle failures.
+    var msg = String(e.message || '');
+    if (!msg || msg === 'Script error.' || /__firefox__|ethereum|solana|phantom|metamask|webkit\.messageHandlers/i.test(msg)) {
+      return;
+    }
     var p = document.body || document.documentElement;
     var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
     d.id = '__bundler_err';
